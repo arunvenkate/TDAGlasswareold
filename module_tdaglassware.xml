@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_tdaglassware" default="compile.module.tdaglassware">
+  <dirname property="module.tdaglassware.basedir" file="${ant.file.module_tdaglassware}"/>
+  
+  <property name="module.jdk.home.tdaglassware" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.tdaglassware" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.tdaglassware" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.tdaglassware" value="${compiler.args}"/>
+  
+  <property name="tdaglassware.output.dir" value="${module.tdaglassware.basedir}/war/WEB-INF/classes"/>
+  <property name="tdaglassware.testoutput.dir" value="${module.tdaglassware.basedir}/war/WEB-INF/classes"/>
+  
+  <path id="tdaglassware.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="tdaglassware.module.production.classpath">
+    <path refid="${module.jdk.classpath.tdaglassware}"/>
+  </path>
+  
+  <path id="tdaglassware.runtime.production.module.classpath">
+    <pathelement location="${tdaglassware.output.dir}"/>
+  </path>
+  
+  <path id="tdaglassware.module.classpath">
+    <path refid="${module.jdk.classpath.tdaglassware}"/>
+    <pathelement location="${tdaglassware.output.dir}"/>
+  </path>
+  
+  <path id="tdaglassware.runtime.module.classpath">
+    <pathelement location="${tdaglassware.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.tdaglassware">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.tdaglassware">
+    <patternset refid="compiler.excluded"/>
+    <patternset refid="excluded.from.module.tdaglassware"/>
+  </patternset>
+  
+  <path id="tdaglassware.module.sourcepath">
+    <dirset dir="${module.tdaglassware.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.tdaglassware" depends="compile.module.tdaglassware.production,compile.module.tdaglassware.tests" description="Compile module TDAGlassware"/>
+  
+  <target name="compile.module.tdaglassware.production" depends="register.custom.compilers" description="Compile module TDAGlassware; production classes">
+    <mkdir dir="${tdaglassware.output.dir}"/>
+    <javac2 destdir="${tdaglassware.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.tdaglassware}/javac">
+      <compilerarg line="${compiler.args.tdaglassware}"/>
+      <bootclasspath refid="tdaglassware.module.bootclasspath"/>
+      <classpath refid="tdaglassware.module.production.classpath"/>
+      <src refid="tdaglassware.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.tdaglassware"/>
+    </javac2>
+    
+    <copy todir="${tdaglassware.output.dir}">
+      <fileset dir="${module.tdaglassware.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+        <patternset refid="excluded.from.compilation.tdaglassware"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.tdaglassware.tests" depends="register.custom.compilers,compile.module.tdaglassware.production" description="compile module TDAGlassware; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.tdaglassware" description="cleanup module">
+    <delete dir="${tdaglassware.output.dir}"/>
+    <delete dir="${tdaglassware.testoutput.dir}"/>
+  </target>
+</project>
